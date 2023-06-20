@@ -1,0 +1,23 @@
+{
+  "name": "note_taker_app",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "An app to track your notes",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon ./app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "Note_Taker_App"
+  },
+  "author": "guymorganb",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
