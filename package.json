@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "description": "An app to track your notes",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "start": "nodemon ./app.js",
+    "start": "nodemon ./server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,10 +15,13 @@
   "author": "guymorganb",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.4.0",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "fs-extra": "^11.1.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "webpack": "^5.88.0"
   }
 }

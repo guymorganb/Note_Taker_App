@@ -1,0 +1,70 @@
+/**
+ * JavaScript to build and handle the notes page
+ */
+import { firstDiv, nav, main} from "./htmlElements.js";
+import { cursorPositionInContentEditableDiv } from "./contentEditableDiv.js";
+import { sendPostRequestToServer } from "./postRequest.js";
+import { saveNoteToLeftSide } from "./saveNotesToleft.js";
+const postRequest = sendPostRequestToServer;
+
+// handles the save button
+const toggleSaveButton = (element1, saveButton, element2) => {
+    if(element1.text() === 'Note Title;' || element1.text() === "*" || element1.text() === "" ){
+        $(saveButton).hide();
+    }else{
+        $(saveButton).show();
+        // remove event handlers that were bound to the element to avoid extra data
+        $(saveButton).off('click');
+        //$(saveButton).off('keyup');
+        saveTargets(saveButton, element1, element2)
+    }
+};
+// makes an object, then sends the object to the server, then the server will send to database
+const saveTargets = (saveButton, target1, target2) => {
+    // make the callback function async in order to await the data
+    $(saveButton).on('click', async function(){
+        // get the data from the targets
+        const data = {
+            title: target1.text(),
+            text: target2.text(),
+        }
+       const response = await postRequest('/api/notes', JSON.stringify(data))
+       saveNoteToLeftSide(response)
+
+    })
+}
+
+const clearNote = (buttonClicked, target1, target2, toggleButton) => {
+    buttonClicked.on('click', function(){
+        target1.text('Note Title;');
+        target2.text('Note Text');
+        toggleSaveButton(target1, toggleButton, target2)
+    });
+};
+
+const init = () => {
+    
+    $("body").append(firstDiv);
+    firstDiv.append(nav);
+    main.insertAfter(nav)
+    
+    const noteTitle= $('.noteTitle');
+    const noteText = $('.noteText');
+    const saveButton = $('.saveButton');
+    const makeNewNote = $('.newNote');
+
+    toggleSaveButton(noteTitle, saveButton, noteText);
+    
+
+    clearNote(makeNewNote, noteTitle, noteText, saveButton);
+    // must use even delegation
+    $(document).on('keyup', noteTitle, function() {
+        toggleSaveButton(noteTitle, saveButton, noteText);
+    });
+    saveTargets(saveButton, noteTitle, noteText)
+    cursorPositionInContentEditableDiv(noteTitle, noteText)
+};
+
+$(document).ready(init);
+
+
