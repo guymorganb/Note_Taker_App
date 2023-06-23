@@ -31,6 +31,7 @@ const saveTargets = (saveButton, target1, target2) => {
             text: target2.text(),
         }
        const response = await postRequest('/api/notes', JSON.stringify(data))
+       console.log('post request: ',response)
        saveNoteToLeftSide(response)
        deleteNote()
 
@@ -50,6 +51,7 @@ const deleteNote = () => {
     deleteBtn.on('click', deleteBtn, async function(event){
         // target the button
         let tempElement = $(event.target).closest('button')
+        console.log(event.target)
         // get the dataID you attached previously
         let dataID = tempElement.data('noteid')
         //sending delete request to server when button clicked make sure this is wraped in {}
@@ -63,8 +65,37 @@ const deleteNote = () => {
     // make the server find the data-id attribute in db.json and remove it
 }
 
+const callPersistantData = async (url) => {
+    try{
+        const response = await axios(url,{
+            method: 'get',
+            headers: {
+                'Content-Type': 'application/json',
+            }})
+        //console.log(response)
+        if (response.status == 200){
+            const jsonArray = response.data
+            
+            const rf = (array) =>{
+                if(array.length < 1){
+                    return array
+                }
+                let smallArray = array.splice(array.length-1,1)
+                rf(array)
+                let fromCallStack = smallArray.pop()
+                saveNoteToLeftSide(fromCallStack)
+            }
+            rf(jsonArray)
+        }
+    }catch(error){
+        console.error({Message: "Error: ", Error: error})
+    }finally{
+        deleteNote()
+    }
+}
+
 const init = () => {
-    
+    callPersistantData('/api/json')
     $("body").append(firstDiv);
     firstDiv.append(nav);
     main.insertAfter(nav)
