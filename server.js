@@ -10,17 +10,20 @@ const app = express();
 const port = process.env.PORT;
 const __dirname = dirname(fileURLToPath(import.meta.url));  
 const UUIDv5 = generateUUIDv5;
-const myNamespace = "1b671a64-40d5-491e-99b0-da01ff1f3341"
 // used for working with incoming json payloads
 app.use(express.json()) 
 // handle a server error by attaching an error event listener to the res object
 // upon recieving a "get" request this send the first page index.html back
+
+// allows the browser to access the 'public directory' so it can render eveything necessary like css styles if this is placed before the request above, express will default to sending index.html
+app.use(express.static('public'));
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/index.html'), (err) => {
     if (err) {
       // Handle the error here
-      console.error('Error sending file:', err);
-      res.status(500).send('Internal Server Error');
+      console.error({Message: 'Error sending file:', Error: err});
+      res.status(400).send('Bad request');
     } else {
       console.log('Successfully load landing page');
       
@@ -28,29 +31,46 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/notes', (req, res) => {
-    res.sendFile(path.join(__dirname, '/public/notes.html'), (err) => {
-      if (err) {
+// get notes
+const sendNotesPage = (req, res) => {
+    const notesPagePath = path.join(__dirname, '/public/notes.html');
+    res.sendFile(notesPagePath, (err)=>{
+      if(err){
         // Handle the error here
-        console.error('Error sending file:', err);
+        console.error({Message: "Error sending file: ", Error: err})
         res.status(500).send('Internal Server Error');
-      } else {
-        console.log('Successfully loaded notes page');
+      }else{
+        console.log("notes.html successfully sent")
       }
-    });
-  });
-// allows the browser to access the 'public directory' so it can render eveything necessary like css styles if this is placed before the request above, express will default to sending index.html
-app.use(express.static('public'));
+    })
+  }
+ 
+const persistJsonData = async (req, res) =>{
+  try{
+    const dbJsonPath = path.join(__dirname, '/db/notes.json')
+    const jsonData = await fs.readFile(dbJsonPath, 'utf8')
+    // Trim leading and trailing white space and check if the string is empty or equal to '[]'
+    const isEmpty = jsonData.trim() === "" || jsonData.trim() === "[]";
+    // check if its an empty dataset
+    if (isEmpty) {
+      res.status(204).send('No content');
+    } else {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(jsonData);  
+    }
+  } catch (error) {
+    console.error({Message: 'Error1:', Error: error});
+    res.status(500).send('Internal Server Error');
+  }
+}
+
 //some code that checks the post request from notes.js and writes it to your JSON db file
 // define a post route for when a note is sent to the server from the client side
 const readFileWriteData = async (req, res) => {
     // will handle any server errors
   try {
-
-    // check if the db.json is empty an if its not send the data so it can be written to the page
-
-
     const { title, text } = req.body; // destructure the body
+    const myNamespace = "1b671a64-40d5-491e-99b0-da01ff1f3341"
     // check if properties are present
     if (text !== '') {
       // create a new object for the data and add a UUID hash to it
@@ -83,7 +103,7 @@ const readFileWriteData = async (req, res) => {
       res.status(400).send(req.body);
     }
   } catch (error) {
-    console.error('Processing error', error);
+    console.error({Message: 'Processing error', Error: error});
     res.status(500).send('Internal Server Error');
     }
 };
@@ -107,6 +127,8 @@ const readFileDeleteData = async (req, res) => {
   }
 }
 
+app.get('/api/json', persistJsonData)
+app.get('/notes', sendNotesPage)
 app.delete('/api/notes', readFileDeleteData)
 app.post('/api/notes', readFileWriteData); 
 
