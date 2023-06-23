@@ -37,7 +37,7 @@ const saveTargets = (saveButton, target1, target2) => {
 
     })
 }
-
+// handles clearing notepad
 const clearNote = (buttonClicked, target1, target2, toggleButton) => {
     buttonClicked.on('click', function(){
         target1.text('Note Title;');
@@ -45,7 +45,7 @@ const clearNote = (buttonClicked, target1, target2, toggleButton) => {
         toggleSaveButton(target1, toggleButton, target2)
     });
 };
-
+// handles deleting notes
 const deleteNote = () => {
     let deleteBtn = $('.delete');
     deleteBtn.on('click', deleteBtn, async function(event){
@@ -62,9 +62,8 @@ const deleteNote = () => {
             removeDiv.remove()
         }
     })
-    // make the server find the data-id attribute in db.json and remove it
 }
-
+// persists the data from the backend
 const callPersistantData = async (url) => {
     try{
         const response = await axios(url,{
@@ -75,7 +74,6 @@ const callPersistantData = async (url) => {
         //console.log(response)
         if (response.status == 200){
             const jsonArray = response.data
-            
             const rf = (array) =>{
                 if(array.length < 1){
                     return array
