@@ -1,7 +1,7 @@
 /**
  * The HTML elements
  */
-let firstDiv = $(`<div class="border-2 border-black p-1 flex-col h-2/3"></div>`);
+let firstDiv = $(`<div class="border-2 border-black p-1 flex-col h-2/3 flex flex-grow overflow-auto"></div>`);
 
 let nav = $(`<nav class="bg-blue-300 p-2 flex justify-between items-center">
 <div class="text-white">Notes</div>
@@ -19,7 +19,7 @@ let nav = $(`<nav class="bg-blue-300 p-2 flex justify-between items-center">
 </div>
 </nav>`);
 
-let main = $(`<main class="flex">
+let main = $(`<main class="flex flex-grow overflow-auto">
 <aside class="border-r-2 border-gray-300 my-1 mx-4 w-1/3 ">
   <div id="savedNotes" class="flex-col shadow mr-3 border-t-2 border-gray-100">
 
