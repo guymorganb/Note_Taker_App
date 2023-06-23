@@ -11,7 +11,6 @@ const sendPostRequestToServer = async (url, data) => {
                 'Content-Type': 'application/json',
             }
         })
-        console.log(response)
         if(response.ok){
             const data = await response.json();
             return data;
@@ -20,7 +19,7 @@ const sendPostRequestToServer = async (url, data) => {
         }
     }catch(error){
     console.error({Message: 'Failed to save note: ', Error: error})
-}
+    }
 }
 
 export {sendPostRequestToServer}

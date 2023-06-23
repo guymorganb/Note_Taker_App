@@ -5,6 +5,8 @@ import { firstDiv, nav, main} from "./htmlElements.js";
 import { cursorPositionInContentEditableDiv } from "./contentEditableDiv.js";
 import { sendPostRequestToServer } from "./postRequest.js";
 import { saveNoteToLeftSide } from "./saveNotesToleft.js";
+import { deleteRequestFunction } from "./deleteRequest.js";
+const deleteRequest = deleteRequestFunction;
 const postRequest = sendPostRequestToServer;
 
 // handles the save button
@@ -30,6 +32,7 @@ const saveTargets = (saveButton, target1, target2) => {
         }
        const response = await postRequest('/api/notes', JSON.stringify(data))
        saveNoteToLeftSide(response)
+       deleteNote()
 
     })
 }
@@ -41,6 +44,24 @@ const clearNote = (buttonClicked, target1, target2, toggleButton) => {
         toggleSaveButton(target1, toggleButton, target2)
     });
 };
+
+const deleteNote = () => {
+    let deleteBtn = $('.delete');
+    deleteBtn.on('click', deleteBtn, async function(event){
+        // target the button
+        let tempElement = $(event.target).closest('button')
+        // get the dataID you attached previously
+        let dataID = tempElement.data('noteid')
+        //sending delete request to server when button clicked make sure this is wraped in {}
+        let statusCode = await deleteRequest('/api/notes', JSON.stringify({dataID}))
+        // remove the div on 200 status
+        if(statusCode === 200){
+            let removeDiv = tempElement.closest('div')
+            removeDiv.remove()
+        }
+    })
+    // make the server find the data-id attribute in db.json and remove it
+}
 
 const init = () => {
     
@@ -54,8 +75,6 @@ const init = () => {
     const makeNewNote = $('.newNote');
 
     toggleSaveButton(noteTitle, saveButton, noteText);
-    
-
     clearNote(makeNewNote, noteTitle, noteText, saveButton);
     // must use even delegation
     $(document).on('keyup', noteTitle, function() {
