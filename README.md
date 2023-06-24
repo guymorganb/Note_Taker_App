@@ -45,10 +45,11 @@
     w: http://animista.net, t: @cssanimista
 
   ## Features
-  - Use of ExpressJs
+  - Use of ExpressJs and NodeJs
 
   ## How to Contribute
   - through GitHub or email
+  - GitHub source code: https://github.com/guymorganb/Note_Taker_App
   
   ## Tests
   - n/a
