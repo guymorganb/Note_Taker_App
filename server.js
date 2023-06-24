@@ -7,7 +7,7 @@ import fs from 'fs-extra';
 import { generateUUIDv5 } from './helpers/UUIDv5.js' 
 dotenv.config();    // run this to access the .env folder
 const app = express(); 
-const port = process.env.PORT;
+const port = process.env.PORT || 3001
 const __dirname = dirname(fileURLToPath(import.meta.url));  
 const UUIDv5 = generateUUIDv5;
 // used for working with incoming json payloads
