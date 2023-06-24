@@ -18,6 +18,7 @@
   
   ## Usage
   - This project can be used to track notes of all types, and be able to keep them stored for access at any time
+  - view live deployment at https://notes-with-express-0330a20c1e26.herokuapp.com/
 
   ## Images of the project
   ![step 1](https://github.com/guymorganb/Note_Taker_App/blob/main/public/styles/Screenshot%202023-06-23%20at%201.44.51%20PM.png?raw=true)
